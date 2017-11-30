@@ -40,3 +40,41 @@ ggplot(data = mpg, aes(x = displ, y = hwy, color=class)) +
   geom_point()
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Data wrangling with 'dplyr'
+```
+gapminder <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv")
+View(gapminder)
+
+## useful functions to get to inspect data, operate on the complete gapminder dataset
+head(gapminder) # show first 6 rows
+tail(gapminder) # show last 6 rows
+head(gapminder, 30) # tell how many
+str(gapminder) # structure of data
+names(gapminder) # column headers
+dim(gapminder) # deminsions of the data
+ncol(gapminder) # number of columns
+nrow(gapminder) # number of rows
+c(nrow(gapminder), ncol(gapminder)) # combine 
+summary(gapminder)
+
+## slice the gapminder dataset by column
+head(gapminder$lifeExp)
+
+```
+
+Filter the gapminder data
+```
+x1 <- ilter(gapminder, lifeExp < 29)
+mean(x1$lifeExp)
+
+# pipe operator '%>%', ctrl-shift-m
+gapminder %>% head(3)
+
+# pipe with sweden mean of lifeExp
+gapminder %>% 
+   filter(country == "Sweden") %>% 
+   summarize(mean_lifeExp=mean(lifeExp))
+   
+```
+'read_csv' is from the 'readr' package (part of tidyverse). It is not the 'read.csv' that is part of base R
