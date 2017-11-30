@@ -22,10 +22,6 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r cars}
 #summary(cars)
-
-#mpg
-g <- ggplot(data = mpg, aes(x = displ, y = hwy))
-g + geom_point()
 ```
 
 ## Including Plots
@@ -33,7 +29,14 @@ g + geom_point()
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+g <- ggplot(data = mpg, aes(x = displ, y = hwy))
+g + geom_point()
 ```
 
+### `color`!
+
+```{r color}
+ggplot(data = mpg, aes(x = displ, y = hwy, color=class)) + 
+  geom_point()
+```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
