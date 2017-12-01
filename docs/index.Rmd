@@ -42,6 +42,27 @@ ggplot(data = mpg, aes(x = displ, y = hwy, color=class)) +
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ## Data wrangling with 'dplyr'
+```{r}
+gapminder <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv")
+View(gapminder)
+
+## useful functions to get to inspect data, operate on the complete gapminder dataset
+head(gapminder) # show first 6 rows
+tail(gapminder) # show last 6 rows
+head(gapminder, 30) # tell how many
+str(gapminder) # structure of data
+names(gapminder) # column headers
+dim(gapminder) # deminsions of the data
+ncol(gapminder) # number of columns
+nrow(gapminder) # number of rows
+c(nrow(gapminder), ncol(gapminder)) # combine 
+summary(gapminder)
+
+## slice the gapminder dataset by column
+head(gapminder$lifeExp)
+
+```
+
 ```
 gapminder <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv")
 View(gapminder)
@@ -64,6 +85,19 @@ head(gapminder$lifeExp)
 ```
 
 Filter the gapminder data
+```{r}
+x1 <- filter(gapminder, lifeExp < 29)
+mean(x1$lifeExp)
+
+# pipe operator '%>%', ctrl-shift-m
+gapminder %>% head(3)
+
+# pipe with sweden mean of lifeExp
+gapminder %>% 
+   filter(country == "Sweden") %>% 
+   summarize(mean_lifeExp=mean(lifeExp))
+```
+
 ```
 x1 <- ilter(gapminder, lifeExp < 29)
 mean(x1$lifeExp)
@@ -77,4 +111,56 @@ gapminder %>%
    summarize(mean_lifeExp=mean(lifeExp))
    
 ```
+```{r}
+
+## combine what we have learned
+gapminder %>% 
+  filter(country == "Cambodia") %>% 
+  select(country, year, pop, gdpPercap)
+
+gapminder %>% 
+  filter(country == "Cambodia") %>% 
+  select(-continent, -lifeExp)
+
+## a few more things about filter
+gapminder %>% 
+  filter(country == "Mexico", year == 2002)
+
+## mutate() to add columns
+gapminder %>% 
+  mutate(gdp = pop * gdpPercap)
+
+## lets add an index
+gapminder %>% 
+  mutate(index = 1:nrow(gapminder)) %>% 
+  tail()
+
+## lets add an index
+nv1 <- gapminder %>% 
+  mutate(index = 1:nrow(gapminder), gpd=pop*gdpPercap) %>% 
+  tail(6)
+
+## not the right way
+gapminder %>% 
+  filter(country==c("Egypt","Vietnam"))
+
+## '%in%' operator lets you filter multiple things within a 'c()'
+gapminder %>% 
+  filter(country %in% c("Egypt","Vietnam")) %>% 
+  mutate(max_gdp=max(gdpPercap))
+
+## group_by() so that we can get 2 maxes
+gapminder %>% 
+  filter(country %in% c("Egypt","Vietnam")) %>% 
+  group_by(country) %>% 
+  mutate(max_gdp=max(gdpPercap))
+
+gapminder %>% 
+  group_by(country) %>% 
+  summarize(max_gdp = max(gdpPercap)) %>% 
+  arrange(desc(max_gdp))
+
+
+```
+
 'read_csv' is from the 'readr' package (part of tidyverse). It is not the 'read.csv' that is part of base R
